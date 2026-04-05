@@ -5,11 +5,15 @@ import { useAuth } from '../contexts/AuthContext';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors, Spacing, BorderRadius, Shadows } from '../../constants/theme';
 import AssessmentFlow from '../components/AssessmentFlow';
+import BreathingExerciseScreen from './Home/BreathingExerciseScreen';
+import SleepScreen from './Home/SleepScreen';
 
 export default function HomeScreen() {
   const { user } = useAuth();
   
   const [showAssessments, setShowAssessments] = useState(false);
+  const [showBreathe, setShowBreathe] = useState(false);
+  const [showSleep, setShowSleep] = useState(false);
 
   const renderHomeLayout = () => (
     <ScrollView style={styles.scrollArea} showsVerticalScrollIndicator={false}>
@@ -61,7 +65,7 @@ export default function HomeScreen() {
           { id: 'reflect', title: 'Suy ngẫm', sub: 'Câu hỏi hằng ngày', icon: 'sparkles-outline', bg: 'rgba(191,219,254, 0.4)', iconCol: '#3B82F6' },
           { id: 'sleep', title: 'Giấc ngủ', sub: 'Thư giãn', icon: 'moon-outline', bg: '#FFF3E0', iconCol: '#FB923C' }
         ].map((item) => (
-          <TouchableOpacity key={item.id} style={[styles.gridItem, { backgroundColor: item.bg }]} onPress={() => {}} activeOpacity={0.7}>
+          <TouchableOpacity key={item.id} style={[styles.gridItem, { backgroundColor: item.bg }]} onPress={() => { if (item.id === 'breathe') setShowBreathe(true); if (item.id === 'sleep') setShowSleep(true); }} activeOpacity={0.7}>
             <View style={styles.gridIconBox}>
               <Ionicons name={item.icon as any} size={24} color={item.iconCol} />
             </View>
@@ -124,7 +128,11 @@ export default function HomeScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      {showAssessments ? (
+      {showSleep ? (
+        <SleepScreen onClose={() => setShowSleep(false)} />
+      ) : showBreathe ? (
+        <BreathingExerciseScreen onClose={() => setShowBreathe(false)} />
+      ) : showAssessments ? (
         <AssessmentFlow onClose={() => setShowAssessments(false)} />
       ) : (
         renderHomeLayout()
