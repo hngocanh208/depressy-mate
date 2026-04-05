@@ -126,13 +126,17 @@ export default function HomeScreen() {
     </ScrollView>
   );
 
+  if (showSleep) {
+    return <SleepScreen onClose={() => setShowSleep(false)} />;
+  }
+
+  if (showBreathe) {
+    return <BreathingExerciseScreen onClose={() => setShowBreathe(false)} />;
+  }
+
   return (
     <SafeAreaView style={styles.container}>
-      {showSleep ? (
-        <SleepScreen onClose={() => setShowSleep(false)} />
-      ) : showBreathe ? (
-        <BreathingExerciseScreen onClose={() => setShowBreathe(false)} />
-      ) : showAssessments ? (
+      {showAssessments ? (
         <AssessmentFlow onClose={() => setShowAssessments(false)} />
       ) : (
         renderHomeLayout()
