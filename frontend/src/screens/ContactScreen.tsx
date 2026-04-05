@@ -1,9 +1,9 @@
-import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function ContactScreen() {
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Text style={styles.title}>📞 Liên hệ</Text>
       <Text style={styles.subtitle}>Tìm bác sĩ và phòng khám gần bạn</Text>
 
@@ -11,7 +11,7 @@ export default function ContactScreen() {
         <Text style={styles.cardEmoji}>🏥</Text>
         <Text style={styles.cardText}>Tính năng đang được phát triển...</Text>
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#0F172A',
     paddingHorizontal: 20,
-    paddingTop: 20,
+    // paddingTop: 20,
   },
   title: {
     fontSize: 24,
