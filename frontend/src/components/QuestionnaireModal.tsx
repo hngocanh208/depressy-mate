@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Modal, View, Text, TouchableOpacity, StyleSheet, ScrollView, Alert, ActivityIndicator, SafeAreaView } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useAuth } from '../contexts/AuthContext';
+import { Colors, Spacing, BorderRadius } from '../../constants/theme';
 
 interface QuestionnaireModalProps {
   visible: boolean;
@@ -113,7 +114,7 @@ export default function QuestionnaireModal({ visible, onClose, assessment, onSub
     <Modal visible={visible} animationType="slide" presentationStyle="pageSheet">
       <SafeAreaView style={styles.container}>
         {loading ? (
-          <ActivityIndicator size="large" color="#6366F1" style={{marginTop: 50}} />
+          <ActivityIndicator size="large" color={Colors.light.primary} style={{marginTop: 50}} />
         ) : (
           <>
             <View style={styles.header}>
@@ -171,46 +172,49 @@ export default function QuestionnaireModal({ visible, onClose, assessment, onSub
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0F172A',
+    backgroundColor: Colors.light.background,
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 16,
+    padding: Spacing.md,
     borderBottomWidth: 1,
-    borderBottomColor: '#1E293B',
+    borderBottomColor: Colors.light.outlineVariant,
   },
   closeBtn: {
     padding: 8,
   },
   closeText: {
-    color: '#94A3B8',
+    color: Colors.light.onSurfaceVariant,
     fontSize: 16,
+    fontFamily: 'Manrope',
   },
   progressText: {
-    color: '#F1F5F9',
+    color: Colors.light.onSurface,
     fontSize: 16,
     fontWeight: 'bold',
+    fontFamily: 'Manrope',
   },
   progressBarBg: {
     height: 4,
-    backgroundColor: '#1E293B',
+    backgroundColor: Colors.light.surfaceContainerLow,
     width: '100%',
   },
   progressBarFill: {
     height: 4,
-    backgroundColor: '#6366F1',
+    backgroundColor: Colors.light.primary,
   },
   content: {
-    padding: 24,
+    padding: Spacing.xl,
   },
   questionText: {
     fontSize: 22,
     fontWeight: 'bold',
-    color: '#F8FAFC',
-    marginBottom: 32,
+    color: Colors.light.onSurface,
+    marginBottom: Spacing.xl,
     lineHeight: 32,
+    fontFamily: 'Manrope',
   },
   optionsContainer: {
     width: '100%',
@@ -218,60 +222,62 @@ const styles = StyleSheet.create({
   optionBtn: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#1E293B',
-    padding: 16,
-    borderRadius: 12,
-    marginBottom: 12,
+    backgroundColor: Colors.light.surfaceContainerLowest,
+    padding: Spacing.md,
+    borderRadius: BorderRadius.md,
+    marginBottom: Spacing.sm,
     borderWidth: 1,
-    borderColor: '#334155',
+    borderColor: Colors.light.outlineVariant,
   },
   optionBtnSelected: {
-    borderColor: '#6366F1',
-    backgroundColor: 'rgba(99, 102, 241, 0.1)',
+    borderColor: Colors.light.primary,
+    backgroundColor: Colors.light.primary + '1A', // transparent primary
   },
   radio: {
     width: 20,
     height: 20,
     borderRadius: 10,
     borderWidth: 2,
-    borderColor: '#64748B',
-    marginRight: 16,
+    borderColor: Colors.light.outlineVariant,
+    marginRight: Spacing.md,
   },
   radioSelected: {
-    borderColor: '#6366F1',
-    backgroundColor: '#6366F1',
+    borderColor: Colors.light.primary,
+    backgroundColor: Colors.light.primary,
   },
   optionText: {
-    color: '#CBD5E1',
+    color: Colors.light.onSurfaceVariant,
     fontSize: 16,
     flex: 1,
+    fontFamily: 'Manrope',
   },
   optionTextSelected: {
-    color: '#F8FAFC',
+    color: Colors.light.primary,
     fontWeight: 'bold',
   },
   footer: {
     flexDirection: 'row',
-    padding: 16,
+    padding: Spacing.md,
     justifyContent: 'flex-start',
     borderTopWidth: 1,
-    borderTopColor: '#1E293B',
+    borderTopColor: Colors.light.outlineVariant,
   },
   navBtn: {
     paddingVertical: 12,
     paddingHorizontal: 24,
-    backgroundColor: '#334155',
-    borderRadius: 8,
+    backgroundColor: Colors.light.surfaceContainerHigh,
+    borderRadius: BorderRadius.sm,
   },
   navBtnDisabled: {
     backgroundColor: 'transparent',
   },
   navBtnText: {
-    color: '#F8FAFC',
+    color: Colors.light.onSurface,
     fontSize: 16,
     fontWeight: 'bold',
+    fontFamily: 'Manrope',
   },
   navBtnTextDisabled: {
-    color: '#475569',
+    color: Colors.light.onSurfaceVariant,
   }
 });

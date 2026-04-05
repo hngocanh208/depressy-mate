@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, Animated, TouchableOpacity } from 'react-native';
+import { Colors, Spacing, BorderRadius, Shadows } from '../../constants/theme';
 
 interface ResultGaugeProps {
   result: any;
@@ -37,7 +38,7 @@ export default function ResultGauge({ result, onClose }: ResultGaugeProps) {
 
   return (
     <View style={styles.container}>
-      <View style={styles.card}>
+      <View style={[styles.card, Shadows.ambient]}>
         <Text style={styles.title}>Kết quả: {result.assessment_code}</Text>
         
         {/* Gauge UI */}
@@ -56,7 +57,7 @@ export default function ResultGauge({ result, onClose }: ResultGaugeProps) {
         <View style={styles.classificationsBox}>
           {Object.keys(result.classifications || {}).map((cat) => (
             <Text key={cat} style={styles.classText}>
-              • {cat}: <Text style={{fontWeight: 'bold', color: '#E2E8F0'}}>{result.classifications[cat]}</Text>
+              • {cat}: <Text style={{fontWeight: 'bold', color: Colors.light.onSurface}}>{result.classifications[cat]}</Text>
             </Text>
           ))}
         </View>
@@ -77,19 +78,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   card: {
-    backgroundColor: '#1E293B',
-    borderRadius: 16,
+    backgroundColor: Colors.light.surfaceContainerLowest,
+    borderRadius: BorderRadius.lg,
     padding: 24,
     width: '100%',
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#334155',
+    borderColor: Colors.light.outlineVariant,
   },
   title: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#F8FAFC',
+    color: Colors.light.onSurface,
     marginBottom: 30,
+    fontFamily: 'Manrope',
   },
   gaugeWrapper: {
     width: 200,
@@ -105,7 +107,7 @@ const styles = StyleSheet.create({
     height: 200, // Gấp đôi chiều cao
     borderRadius: 100,
     borderWidth: 20,
-    borderColor: '#334155',
+    borderColor: Colors.light.outlineVariant,
     borderBottomColor: 'transparent',
     borderRightColor: 'transparent',
     transform: [{ rotate: '45deg' }],
@@ -124,7 +126,7 @@ const styles = StyleSheet.create({
   needle: {
     width: 4,
     height: 80,
-    backgroundColor: '#F8FAFC',
+    backgroundColor: Colors.light.onSurface,
     borderRadius: 2,
     position: 'absolute',
     bottom: 0, // Gắn ở đáy
@@ -132,7 +134,7 @@ const styles = StyleSheet.create({
   needleBase: {
     width: 16,
     height: 16,
-    backgroundColor: '#6366F1',
+    backgroundColor: Colors.light.primary,
     borderRadius: 8,
     position: 'absolute',
     bottom: -8, // Tâm nằm giữa đáy
@@ -142,30 +144,33 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 20,
     textAlign: 'center',
+    fontFamily: 'Manrope',
   },
   classificationsBox: {
-    backgroundColor: '#0F172A',
-    padding: 16,
-    borderRadius: 12,
+    backgroundColor: Colors.light.surfaceContainerLow,
+    padding: Spacing.md,
+    borderRadius: BorderRadius.md,
     width: '100%',
     marginBottom: 20,
   },
   classText: {
-    color: '#94A3B8',
+    color: Colors.light.onSurfaceVariant,
     fontSize: 15,
     marginBottom: 8,
+    fontFamily: 'Manrope',
   },
   closeBtn: {
-    backgroundColor: '#334155',
+    backgroundColor: Colors.light.surfaceContainerHigh,
     paddingVertical: 12,
     paddingHorizontal: 24,
-    borderRadius: 8,
+    borderRadius: BorderRadius.sm,
     width: '100%',
     alignItems: 'center',
   },
   closeBtnText: {
-    color: '#F8FAFC',
+    color: Colors.light.onSurface,
     fontWeight: 'bold',
     fontSize: 16,
+    fontFamily: 'Manrope',
   }
 });

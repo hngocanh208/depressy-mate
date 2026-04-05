@@ -1,23 +1,24 @@
 import 'react-native-url-polyfill/auto';
 import React from 'react';
-import { NavigationContainer, DarkTheme } from '@react-navigation/native';
+import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
 import { ActivityIndicator, View, StyleSheet } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { AuthProvider, useAuth } from './src/contexts/AuthContext';
 import AuthStack from './src/navigation/AuthStack';
 import MainTabNavigator from './src/navigation/MainTabNavigator';
+import { Colors } from './constants/theme';
 
-// Custom dark theme cho navigation (khớp với style tổng thể)
-const AppDarkTheme = {
-  ...DarkTheme,
+// Custom theme cho navigation (sử dụng base schema "Radiant Sanctuary")
+const AppGlobalTheme = {
+  ...DefaultTheme,
   colors: {
-    ...DarkTheme.colors,
-    background: '#0F172A',
-    card: '#1E293B',
-    text: '#F1F5F9',
-    border: '#334155',
-    primary: '#6366F1',
+    ...DefaultTheme.colors,
+    background: Colors.light.background,
+    card: Colors.light.surfaceContainerLowest,
+    text: Colors.light.onSurface,
+    border: Colors.light.outlineVariant,
+    primary: Colors.light.primary,
   },
 };
 
@@ -32,13 +33,13 @@ function AppNavigator() {
   if (isLoading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#6366F1" />
+        <ActivityIndicator size="large" color={Colors.light.primary} />
       </View>
     );
   }
 
   return (
-    <NavigationContainer theme={AppDarkTheme}>
+    <NavigationContainer theme={AppGlobalTheme}>
       {token ? <MainTabNavigator /> : <AuthStack />}
     </NavigationContainer>
   );
@@ -48,7 +49,7 @@ export default function App() {
   return (
     <SafeAreaProvider>
       <AuthProvider>
-        <StatusBar style="light" />
+        <StatusBar style="dark" />
         <AppNavigator />
       </AuthProvider>
     </SafeAreaProvider>
@@ -60,6 +61,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#0F172A',
+    backgroundColor: Colors.light.background,
   },
 });
