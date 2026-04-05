@@ -1,179 +1,398 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator, Alert } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuth } from '../contexts/AuthContext';
-import assessmentsData from '../../clinical_scales_seed.json';
-import AssessmentCard from '../components/AssessmentCard';
-import QuestionnaireModal from '../components/QuestionnaireModal';
-import ResultGauge from '../components/ResultGauge';
-import api from '../services/api';
+import { Ionicons } from '@expo/vector-icons';
+import { Colors, Spacing, BorderRadius, Shadows } from '../../constants/theme';
+import AssessmentFlow from '../components/AssessmentFlow';
+import BreathingExerciseScreen from './Home/BreathingExerciseScreen';
+import SleepScreen from './Home/SleepScreen';
+import CheckinScreen from './Home/CheckinScreen';
 
 export default function HomeScreen() {
   const { user } = useAuth();
-  
-  // Lọc ra danh sách các bài test thật, loại bỏ object cấu hình scales
-  const assessments = assessmentsData.filter((item: any) => item.questions);
 
-  const [selectedAssessment, setSelectedAssessment] = useState<any>(null);
-  const [modalVisible, setModalVisible] = useState(false);
-  const [viewMode, setViewMode] = useState<'list' | 'single' | 'history'>('list');
-  const [singleResult, setSingleResult] = useState<any>(null);
-  const [historyResults, setHistoryResults] = useState<any[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
+  const [showAssessments, setShowAssessments] = useState(false);
+  const [showBreathe, setShowBreathe] = useState(false);
+  const [showSleep, setShowSleep] = useState(false);
+  const [showCheckin, setShowCheckin] = useState(false);
 
-  // Lấy lịch sử tất cả các bài đã làm (lấy kết quả gần nhất của mỗi bài)
-  const handleFetchHistory = async () => {
-    setLoading(true);
-    try {
-      const res = await api.get('/assessments/history');
-      if (res.data.data && res.data.data.length > 0) {
-        const history = res.data.data;
-        const latestPerTest: any[] = [];
-        const seen = new Set();
-        
-        for (const r of history) {
-            if (!seen.has(r.assessment_code)) {
-                seen.add(r.assessment_code);
-                latestPerTest.push(r);
-            }
-        }
-        
-        setHistoryResults(latestPerTest);
-        setViewMode('history');
-      } else {
-        Alert.alert('Thông báo', 'Bạn chưa có kết quả bài test nào.');
-      }
-    } catch (e) {
-      console.log('Error fetching history:', e);
-      Alert.alert('Lỗi', 'Không thể lấy lịch sử bài test');
-    } finally {
-      setLoading(false);
-    }
-  };
+  const renderHomeLayout = () => (
+    <ScrollView style={styles.scrollArea} showsVerticalScrollIndicator={false}>
+      {/* Top App Bar / Welcome Section */}
+      <View style={styles.welcomeSection}>
+        <View style={styles.headerRow}>
+          <Text style={styles.greetingTitle}>Chào buổi sáng</Text>
+          <View style={styles.profileAvatarContainer}>
+            <Image
+              source={{ uri: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80' }}
+              style={styles.profileAvatar}
+            />
+          </View>
+        </View>
+        <Text style={styles.greetingSubtitle}>Hôm nay bạn cảm thấy thế nào?</Text>
+      </View>
 
-  const handleOpenAssessment = (asm: any) => {
-    setSelectedAssessment(asm);
-    setModalVisible(true);
-  };
+      {/* Hero Card - Start your journey */}
+      <View style={styles.heroCardContainer}>
+        <View style={[styles.heroCard, Shadows.ambient]}>
+          <View style={styles.heroCardContent}>
+            <View style={styles.heroTopRow}>
+              <View>
+                <Text style={styles.heroTitle}>Bắt đầu hành trình</Text>
+                <Text style={styles.heroSubtitle}>Khám phá sự bình yên trong tâm trí bạn hôm nay.</Text>
+              </View>
+              <View style={styles.heroIconWrap}>
+                <Ionicons name="rocket-outline" size={28} color={Colors.light.surfaceContainerLowest} />
+              </View>
+            </View>
+            <TouchableOpacity
+              style={styles.heroButton}
+              activeOpacity={0.8}
+              onPress={() => setShowAssessments(true)}
+            >
+              <Text style={styles.heroButtonText}>Bắt đầu ngay</Text>
+              <Ionicons name="arrow-forward" size={18} color={Colors.light.primary} style={{ marginLeft: 8 }} />
+            </TouchableOpacity>
+          </View>
+        </View>
+      </View>
 
-  const handleSubmitAssessment = async (answers: any[]) => {
-    setModalVisible(false); // Ẩn modal trước
-    setSubmitting(true);
-    try {
-      const payload = {
-        assessment_code: selectedAssessment.assessment_code,
-        user_answers: answers,
-      };
-      
-      const res = await api.post('/assessments/calculate', payload);
-      setSingleResult(res.data.data);
-      setViewMode('single'); // Chuyển sang chế độ xem kết quả vừa test
-      Alert.alert('Thành công', 'Kết quả bài test đã được lưu');
-    } catch (e: any) {
-      Alert.alert('Lỗi', e.response?.data?.error || 'Có lỗi khi nộp bài');
-    } finally {
-      setSubmitting(false);
-    }
-  };
+      {/* Quick Actions Grid */}
+      <Text style={styles.sectionHeading}>Hành động nhanh</Text>
+      <View style={styles.gridContainer}>
+        {[
+          { id: 'breathe', title: 'Hít thở', sub: '2 phút thực hành', icon: 'water-outline', bg: 'rgba(167,243,208, 0.4)', iconCol: Colors.light.secondary },
+          { id: 'checkin', title: 'Cập nhật trạng thái', sub: 'Bạn ổn không?', icon: 'heart-outline', bg: 'rgba(221,214,254, 0.4)', iconCol: Colors.light.primary },
+          { id: 'reflect', title: 'Suy ngẫm', sub: 'Câu hỏi hằng ngày', icon: 'sparkles-outline', bg: 'rgba(191,219,254, 0.4)', iconCol: '#3B82F6' },
+          { id: 'sleep', title: 'Giấc ngủ', sub: 'Thư giãn', icon: 'moon-outline', bg: '#FFF3E0', iconCol: '#FB923C' }
+        ].map((item) => (
+          <TouchableOpacity key={item.id} style={[styles.gridItem, { backgroundColor: item.bg }]} onPress={() => { if (item.id === 'breathe') setShowBreathe(true); if (item.id === 'sleep') setShowSleep(true); if (item.id === 'checkin') setShowCheckin(true); }} activeOpacity={0.7}>
+            <View style={styles.gridIconBox}>
+              <Ionicons name={item.icon as any} size={24} color={item.iconCol} />
+            </View>
+            <View>
+              <Text style={styles.gridTitle}>{item.title}</Text>
+              <Text style={styles.gridSub}>{item.sub}</Text>
+            </View>
+          </TouchableOpacity>
+        ))}
+      </View>
+
+      {/* Community Section */}
+      <View style={styles.communityHeader}>
+        <View>
+          <Text style={styles.sectionHeading}>Cộng đồng</Text>
+          <Text style={styles.communitySubtitle}>Chia sẻ và lan tỏa năng lượng</Text>
+        </View>
+        <TouchableOpacity onPress={() => { }}>
+          <Text style={styles.seeAllText}>Xem tất cả</Text>
+        </TouchableOpacity>
+      </View>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.reelScroll}>
+        {[
+          { id: 1, name: 'Minh Anh', time: '5p trước', title: 'Cách tôi vượt qua những ngày tệ nhất...', img: 'https://images.unsplash.com/photo-1472214103451-9374bd1c798e?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80', avatar: 'https://images.unsplash.com/photo-1599566150163-29194dcaad36?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80', fav: '1.2k', chat: '245' },
+          { id: 2, name: 'Linh Chi', time: '1h trước', title: 'Thử thách chánh niệm 7 ngày', img: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80', avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80', fav: '850', chat: '112' }
+        ].map((item) => (
+          <TouchableOpacity key={item.id} style={styles.reelCard} onPress={() => { }} activeOpacity={0.9}>
+            <Image source={{ uri: item.img }} style={styles.reelImg} />
+            <View style={styles.reelOverlay}>
+              <View style={styles.playIconBox}>
+                <Ionicons name="play" size={24} color="#FFF" />
+              </View>
+              <View style={styles.reelBottomInfo}>
+                <View style={styles.reelAuthorRow}>
+                  <Image source={{ uri: item.avatar }} style={styles.reelAvatar} />
+                  <View>
+                    <Text style={styles.reelAuthorName}>{item.name}</Text>
+                    <Text style={styles.reelTime}>{item.time}</Text>
+                  </View>
+                </View>
+                <Text style={styles.reelTitle} numberOfLines={2}>{item.title}</Text>
+                <View style={styles.reelStatsRow}>
+                  <View style={styles.statBox}>
+                    <Ionicons name="heart" size={12} color="rgba(255,255,255,0.9)" />
+                    <Text style={styles.statText}>{item.fav}</Text>
+                  </View>
+                  <View style={styles.statBox}>
+                    <Ionicons name="chatbubble" size={12} color="rgba(255,255,255,0.9)" />
+                    <Text style={styles.statText}>{item.chat}</Text>
+                  </View>
+                </View>
+              </View>
+            </View>
+          </TouchableOpacity>
+        ))}
+      </ScrollView>
+      <View style={{ height: Spacing.xl }} />
+    </ScrollView>
+  );
+
+  if (showCheckin) {
+    return <CheckinScreen onClose={() => setShowCheckin(false)} />;
+  }
+
+  if (showSleep) {
+    return <SleepScreen onClose={() => setShowSleep(false)} />;
+  }
+
+  if (showBreathe) {
+    return <BreathingExerciseScreen onClose={() => setShowBreathe(false)} />;
+  }
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.greeting}>Xin chào, {user?.fullName || 'bạn'} 👋</Text>
-      <Text style={styles.subtitle}>Chào mừng bạn đến với Depressy Mate</Text>
-
-      {loading || submitting ? (
-        <ActivityIndicator size="large" color="#6366F1" style={{marginTop: 50}} />
-      ) : viewMode === 'history' ? (
-        // HIỂN THỊ KẾT QUẢ CỦA TẤT CẢ CÁC BÀI ĐÃ TEST
-        <View style={{flex: 1}}>
-          <View style={styles.headerRow}>
-             <Text style={styles.sectionTitle}>Kết quả các bài đã làm</Text>
-             <TouchableOpacity onPress={() => setViewMode('list')}>
-                <Text style={styles.historyBtn}>Trở lại</Text>
-             </TouchableOpacity>
-          </View>
-          <ScrollView style={styles.scrollArea} showsVerticalScrollIndicator={false}>
-            {historyResults.map((result, index) => (
-              <View key={index} style={{ marginBottom: 20 }}>
-                <ResultGauge result={result} />
-              </View>
-            ))}
-            <View style={{height: 40}} />
-          </ScrollView>
-        </View>
-      ) : viewMode === 'single' ? (
-        // HIỂN THỊ KẾT QUẢ VỪA SUBMIT
-        <ScrollView style={styles.scrollArea} showsVerticalScrollIndicator={false}>
-          <ResultGauge result={singleResult} onClose={() => setViewMode('list')} />
-        </ScrollView>
+      {showAssessments ? (
+        <AssessmentFlow onClose={() => setShowAssessments(false)} />
       ) : (
-        // HIỂN THỊ DANH SÁCH BÀI TEST
-        <>
-          <View style={styles.headerRow}>
-             <Text style={styles.sectionTitle}>Các bài đánh giá tâm lý</Text>
-             <TouchableOpacity onPress={handleFetchHistory}>
-                <Text style={styles.historyBtn}>Kết quả gần nhất</Text>
-             </TouchableOpacity>
-          </View>
-          <ScrollView style={styles.scrollArea} showsVerticalScrollIndicator={false}>
-            {assessments.map((asm: any) => (
-              <AssessmentCard 
-                key={asm.assessment_code} 
-                assessment={asm} 
-                onPress={() => handleOpenAssessment(asm)} 
-              />
-            ))}
-            <View style={{height: 40}} />
-          </ScrollView>
-        </>
+        renderHomeLayout()
       )}
-
-      {/* MODAL LÀM BÀI */}
-      <QuestionnaireModal
-        visible={modalVisible}
-        assessment={selectedAssessment}
-        onClose={() => setModalVisible(false)}
-        onSubmit={handleSubmitAssessment}
-      />
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  fullFlex: { flex: 1 },
   container: {
     flex: 1,
-    backgroundColor: '#0F172A',
-    paddingHorizontal: 20,
-    // paddingTop: 60, Removed to let SafeAreaView handle spacing
+    backgroundColor: Colors.light.background,
+    paddingHorizontal: Spacing.lg,
   },
-  greeting: {
-    fontSize: 24,
-    fontWeight: '700',
-    color: '#F1F5F9',
+  scrollArea: {
+    flex: 1,
   },
-  subtitle: {
-    fontSize: 14,
-    color: '#94A3B8',
-    marginTop: 4,
-    marginBottom: 24,
+  welcomeSection: {
+    marginTop: Spacing.lg,
+    marginBottom: Spacing.xl,
   },
   headerRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 16,
+    marginBottom: Spacing.xs,
   },
-  sectionTitle: {
-    fontSize: 18,
+  greetingTitle: {
+    fontSize: 28,
+    fontFamily: 'Manrope',
+    fontWeight: '800',
+    color: Colors.light.onSurface,
+    letterSpacing: -0.5,
+  },
+  greetingSubtitle: {
+    fontSize: 16,
+    fontFamily: 'Manrope',
+    fontWeight: '500',
+    color: Colors.light.onSurfaceVariant,
+  },
+  profileAvatarContainer: {
+    width: 48,
+    height: 48,
+    borderRadius: BorderRadius.full,
+    borderWidth: 2,
+    borderColor: Colors.light.surfaceContainerLowest,
+    overflow: 'hidden',
+  },
+  profileAvatar: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover',
+  },
+  heroCardContainer: {
+    marginBottom: Spacing.xl,
+  },
+  heroCard: {
+    backgroundColor: Colors.light.primary,
+    borderRadius: BorderRadius.lg,
+    overflow: 'hidden',
+  },
+  heroCardContent: {
+    padding: Spacing.lg,
+    minHeight: 180,
+    justifyContent: 'space-between',
+  },
+  heroTopRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+  },
+  heroTitle: {
+    fontSize: 24,
+    fontFamily: 'Manrope',
     fontWeight: 'bold',
-    color: '#E2E8F0',
+    color: Colors.light.surfaceContainerLowest,
+    marginBottom: Spacing.sm,
   },
-  historyBtn: {
-    color: '#6366F1',
+  heroSubtitle: {
+    fontSize: 14,
+    fontFamily: 'Manrope',
+    color: 'rgba(255,255,255,0.9)',
+    maxWidth: 200,
+  },
+  heroIconWrap: {
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    padding: Spacing.sm,
+    borderRadius: BorderRadius.md,
+  },
+  heroButton: {
+    backgroundColor: Colors.light.surfaceContainerLowest,
+    paddingVertical: 12,
+    paddingHorizontal: Spacing.lg,
+    borderRadius: BorderRadius.full,
+    alignSelf: 'flex-start',
+    marginTop: Spacing.md,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  heroButtonText: {
+    color: Colors.light.primary,
+    fontWeight: 'bold',
+    fontFamily: 'Manrope',
+  },
+  subHeaderRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: Spacing.md,
+    marginTop: Spacing.md,
+  },
+  sectionHeading: {
+    fontSize: 20,
+    fontFamily: 'Manrope',
+    fontWeight: 'bold',
+    color: Colors.light.onSurface,
+    marginBottom: Spacing.md,
+  },
+  gridContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: Spacing.md,
+    marginBottom: Spacing.xl,
+    justifyContent: 'space-between',
+  },
+  gridItem: {
+    width: '47%',
+    padding: Spacing.md,
+    borderRadius: BorderRadius.lg,
+    marginBottom: 8,
+  },
+  gridIconBox: {
+    width: 48,
+    height: 48,
+    backgroundColor: Colors.light.surfaceContainerLowest,
+    borderRadius: BorderRadius.md,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: Spacing.md,
+  },
+  gridTitle: {
+    fontFamily: 'Manrope',
+    fontWeight: 'bold',
+    color: Colors.light.onSurface,
+    fontSize: 15,
+  },
+  gridSub: {
+    fontFamily: 'Manrope',
+    fontSize: 12,
+    color: Colors.light.onSurfaceVariant,
+    marginTop: 2,
+  },
+  communityHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-end',
+    marginBottom: Spacing.md,
+  },
+  communitySubtitle: {
+    fontSize: 14,
+    fontFamily: 'Manrope',
+    color: Colors.light.onSurfaceVariant,
+    marginTop: -8,
+  },
+  seeAllText: {
+    color: Colors.light.primary,
+    fontWeight: 'bold',
+    fontFamily: 'Manrope',
+    fontSize: 14,
+  },
+  reelScroll: {
+    paddingBottom: Spacing.md,
+    paddingRight: Spacing.lg,
+    gap: Spacing.md,
+  },
+  reelCard: {
+    width: 150,
+    height: 200,
+    borderRadius: BorderRadius.lg,
+    overflow: 'hidden',
+    position: 'relative',
+    marginRight: Spacing.md,
+  },
+  reelImg: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover',
+  },
+  reelOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0,0,0,0.3)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  playIconBox: {
+    width: 40,
+    height: 40,
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    borderRadius: BorderRadius.full,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  reelBottomInfo: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    padding: Spacing.sm,
+  },
+  reelAuthorRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 4,
+    gap: 6,
+  },
+  reelAvatar: {
+    width: 24,
+    height: 24,
+    borderRadius: BorderRadius.full,
+    borderWidth: 1,
+    borderColor: '#FFF',
+  },
+  reelAuthorName: {
+    color: '#FFF',
+    fontSize: 10,
     fontWeight: 'bold',
   },
-  scrollArea: {
-    flex: 1,
+  reelTime: {
+    color: 'rgba(255,255,255,0.7)',
+    fontSize: 8,
+  },
+  reelTitle: {
+    color: '#FFF',
+    fontSize: 12,
+    fontWeight: 'bold',
+    marginBottom: 4,
+  },
+  reelStatsRow: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  statBox: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  statText: {
+    color: 'rgba(255,255,255,0.9)',
+    fontSize: 9,
+    fontWeight: 'bold',
   }
 });

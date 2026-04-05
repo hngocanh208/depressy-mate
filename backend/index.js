@@ -6,6 +6,7 @@ const helmet = require('helmet');
 // Import routes
 const authRoutes = require('./routes/authRoutes');
 const assessmentRoutes = require('./routes/assessmentRoutes');
+const checkinRoutes = require('./routes/checkinRoutes');
 
 const app = express();
 
@@ -21,6 +22,7 @@ app.get('/', (req, res) => {
 
 app.use('/api/auth', authRoutes);
 app.use('/api/assessments', assessmentRoutes);
+app.use('/api/checkins', checkinRoutes);
 
 // Khu vực test — có thể xóa khi deploy
 const pool = require('./config/db');
