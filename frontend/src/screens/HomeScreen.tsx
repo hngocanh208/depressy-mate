@@ -7,13 +7,15 @@ import { Colors, Spacing, BorderRadius, Shadows } from '../../constants/theme';
 import AssessmentFlow from '../components/AssessmentFlow';
 import BreathingExerciseScreen from './Home/BreathingExerciseScreen';
 import SleepScreen from './Home/SleepScreen';
+import CheckinScreen from './Home/CheckinScreen';
 
 export default function HomeScreen() {
   const { user } = useAuth();
-  
+
   const [showAssessments, setShowAssessments] = useState(false);
   const [showBreathe, setShowBreathe] = useState(false);
   const [showSleep, setShowSleep] = useState(false);
+  const [showCheckin, setShowCheckin] = useState(false);
 
   const renderHomeLayout = () => (
     <ScrollView style={styles.scrollArea} showsVerticalScrollIndicator={false}>
@@ -22,9 +24,9 @@ export default function HomeScreen() {
         <View style={styles.headerRow}>
           <Text style={styles.greetingTitle}>Chào buổi sáng</Text>
           <View style={styles.profileAvatarContainer}>
-            <Image 
-              source={{ uri: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80' }} 
-              style={styles.profileAvatar} 
+            <Image
+              source={{ uri: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80' }}
+              style={styles.profileAvatar}
             />
           </View>
         </View>
@@ -41,11 +43,11 @@ export default function HomeScreen() {
                 <Text style={styles.heroSubtitle}>Khám phá sự bình yên trong tâm trí bạn hôm nay.</Text>
               </View>
               <View style={styles.heroIconWrap}>
-                 <Ionicons name="rocket-outline" size={28} color={Colors.light.surfaceContainerLowest} />
+                <Ionicons name="rocket-outline" size={28} color={Colors.light.surfaceContainerLowest} />
               </View>
             </View>
-            <TouchableOpacity 
-              style={styles.heroButton} 
+            <TouchableOpacity
+              style={styles.heroButton}
               activeOpacity={0.8}
               onPress={() => setShowAssessments(true)}
             >
@@ -61,11 +63,11 @@ export default function HomeScreen() {
       <View style={styles.gridContainer}>
         {[
           { id: 'breathe', title: 'Hít thở', sub: '2 phút thực hành', icon: 'water-outline', bg: 'rgba(167,243,208, 0.4)', iconCol: Colors.light.secondary },
-          { id: 'checkin', title: 'Ghi nhận', sub: 'Bạn ổn không?', icon: 'heart-outline', bg: 'rgba(221,214,254, 0.4)', iconCol: Colors.light.primary },
+          { id: 'checkin', title: 'Cập nhật trạng thái', sub: 'Bạn ổn không?', icon: 'heart-outline', bg: 'rgba(221,214,254, 0.4)', iconCol: Colors.light.primary },
           { id: 'reflect', title: 'Suy ngẫm', sub: 'Câu hỏi hằng ngày', icon: 'sparkles-outline', bg: 'rgba(191,219,254, 0.4)', iconCol: '#3B82F6' },
           { id: 'sleep', title: 'Giấc ngủ', sub: 'Thư giãn', icon: 'moon-outline', bg: '#FFF3E0', iconCol: '#FB923C' }
         ].map((item) => (
-          <TouchableOpacity key={item.id} style={[styles.gridItem, { backgroundColor: item.bg }]} onPress={() => { if (item.id === 'breathe') setShowBreathe(true); if (item.id === 'sleep') setShowSleep(true); }} activeOpacity={0.7}>
+          <TouchableOpacity key={item.id} style={[styles.gridItem, { backgroundColor: item.bg }]} onPress={() => { if (item.id === 'breathe') setShowBreathe(true); if (item.id === 'sleep') setShowSleep(true); if (item.id === 'checkin') setShowCheckin(true); }} activeOpacity={0.7}>
             <View style={styles.gridIconBox}>
               <Ionicons name={item.icon as any} size={24} color={item.iconCol} />
             </View>
@@ -83,7 +85,7 @@ export default function HomeScreen() {
           <Text style={styles.sectionHeading}>Cộng đồng</Text>
           <Text style={styles.communitySubtitle}>Chia sẻ và lan tỏa năng lượng</Text>
         </View>
-        <TouchableOpacity onPress={() => {}}>
+        <TouchableOpacity onPress={() => { }}>
           <Text style={styles.seeAllText}>Xem tất cả</Text>
         </TouchableOpacity>
       </View>
@@ -92,7 +94,7 @@ export default function HomeScreen() {
           { id: 1, name: 'Minh Anh', time: '5p trước', title: 'Cách tôi vượt qua những ngày tệ nhất...', img: 'https://images.unsplash.com/photo-1472214103451-9374bd1c798e?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80', avatar: 'https://images.unsplash.com/photo-1599566150163-29194dcaad36?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80', fav: '1.2k', chat: '245' },
           { id: 2, name: 'Linh Chi', time: '1h trước', title: 'Thử thách chánh niệm 7 ngày', img: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80', avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80', fav: '850', chat: '112' }
         ].map((item) => (
-          <TouchableOpacity key={item.id} style={styles.reelCard} onPress={() => {}} activeOpacity={0.9}>
+          <TouchableOpacity key={item.id} style={styles.reelCard} onPress={() => { }} activeOpacity={0.9}>
             <Image source={{ uri: item.img }} style={styles.reelImg} />
             <View style={styles.reelOverlay}>
               <View style={styles.playIconBox}>
@@ -122,9 +124,13 @@ export default function HomeScreen() {
           </TouchableOpacity>
         ))}
       </ScrollView>
-      <View style={{height: Spacing.xl}} />
+      <View style={{ height: Spacing.xl }} />
     </ScrollView>
   );
+
+  if (showCheckin) {
+    return <CheckinScreen onClose={() => setShowCheckin(false)} />;
+  }
 
   if (showSleep) {
     return <SleepScreen onClose={() => setShowSleep(false)} />;

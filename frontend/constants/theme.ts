@@ -7,7 +7,7 @@ export const Colors = {
   light: {
     // Brand Core
     primary: '#6B38D4', // Vibrant Purple
-    primaryContainer: '#8455EF',
+    primaryContainer: '#6287ccff',
     secondary: '#006A63', // Mint
     secondaryFixed: '#79F7EA',
 
@@ -17,12 +17,12 @@ export const Colors = {
     surfaceContainerLowest: '#FFFFFF', // High-impact content cards (pop)
     surfaceContainerLow: '#F2F4F6', // Cards / minor lift
     surfaceContainerHigh: '#E6E8EA', // Recessive elements / secondary nav
-    
+
     // Text & Outlines
     onSurface: '#191C1E', // Main text
     onSurfaceVariant: '#494454', // Body/long-form text
     outlineVariant: '#CBC3D7', // The "Ghost Border" (use at 15% opacity max)
-    
+
     // Tints
     surfaceTint: '#6B38D4',
   },
