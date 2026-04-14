@@ -74,6 +74,7 @@ const register = async (req, res) => {
         email: user.email,
         role: user.role,
         fullName,
+        avatarUrl: null,
       },
     });
   } catch (err) {
@@ -98,7 +99,7 @@ const login = async (req, res) => {
   try {
     // Tìm user theo email
     const result = await pool.query(
-      `SELECT u.id, u.email, u.password_hash, u.role, p.full_name
+      `SELECT u.id, u.email, u.password_hash, u.role, p.full_name, p.avatar_url
        FROM users u
        LEFT JOIN profiles p ON p.user_id = u.id
        WHERE u.email = $1`,
@@ -129,6 +130,7 @@ const login = async (req, res) => {
         email: user.email,
         role: user.role,
         fullName: user.full_name,
+        avatarUrl: user.avatar_url,
       },
     });
   } catch (err) {

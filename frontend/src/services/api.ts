@@ -2,8 +2,8 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Đổi thành IP thực của máy dev khi test trên thiết bị thật
-// Ví dụ: 'http://192.168.1.x:3000/api'
-const API_BASE_URL = 'http://192.168.0.227:3000/api'; // Android emulator localhost
+// Ví dụ: 'http://192.168.1.x:3000/api'     
+const API_BASE_URL = 'http://192.168.111.213:3000/api'; // Android emulator localhost
 
 const api = axios.create({
   baseURL: API_BASE_URL,

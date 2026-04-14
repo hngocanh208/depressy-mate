@@ -150,8 +150,8 @@ export default function BreathingExerciseScreen({ onClose }: Props) {
     if (phase === 'idle') return 0;
     const phaseDuration =
       phase === 'inhale' ? BREATHE_CONFIG.inhale :
-      phase === 'hold' ? BREATHE_CONFIG.hold :
-      BREATHE_CONFIG.exhale;
+        phase === 'hold' ? BREATHE_CONFIG.hold :
+          BREATHE_CONFIG.exhale;
     return 1 - (countdown / phaseDuration);
   };
 
