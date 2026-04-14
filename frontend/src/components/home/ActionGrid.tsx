@@ -9,41 +9,41 @@ interface ActionGridProps {
 
 export const ActionGrid: React.FC<ActionGridProps> = ({ onAction }) => {
   const actions = [
-    { 
-      id: 'breathe', 
-      title: 'Hít thở', 
-      sub: '2 phút thực hành', 
+    {
+      id: 'breathe',
+      title: 'Hít thở',
+      sub: '2 phút thực hành',
       icon: 'weather-windy',
       iconSet: 'MaterialCommunityIcons',
-      bg: 'rgba(167,243,208, 0.4)', 
-      iconCol: Colors.light.secondary 
+      bg: 'rgba(167,243,208, 0.4)',
+      iconCol: Colors.light.secondary
     },
-    { 
-      id: 'checkin', 
-      title: 'Cập nhật trạng thái', 
-      sub: 'Bạn ổn không?', 
-      icon: 'heart-outline', 
+    {
+      id: 'checkin',
+      title: 'Cập nhật trạng thái',
+      sub: 'Bạn ổn không?',
+      icon: 'heart-outline',
       iconSet: 'Ionicons',
-      bg: 'rgba(221,214,254, 0.4)', 
-      iconCol: Colors.light.primary 
+      bg: 'rgba(221,214,254, 0.4)',
+      iconCol: Colors.light.primary
     },
-    { 
-      id: 'reflect', 
-      title: 'Suy ngẫm', 
-      sub: 'Câu hỏi hằng ngày', 
-      icon: 'book-outline', 
+    {
+      id: 'reflect',
+      title: 'Nhật ký',
+      sub: 'Câu chuyện của bạn',
+      icon: 'book-outline',
       iconSet: 'Ionicons',
-      bg: 'rgba(191,219,254, 0.4)', 
-      iconCol: '#3B82F6' 
+      bg: 'rgba(191,219,254, 0.4)',
+      iconCol: '#3B82F6'
     },
-    { 
-      id: 'sleep', 
-      title: 'Giấc ngủ', 
-      sub: 'Thư giãn', 
-      icon: 'moon-outline', 
+    {
+      id: 'sleep',
+      title: 'Giấc ngủ',
+      sub: 'Thư giãn',
+      icon: 'moon-outline',
       iconSet: 'Ionicons',
-      bg: '#FFF3E0', 
-      iconCol: '#FB923C' 
+      bg: '#FFF3E0',
+      iconCol: '#FB923C'
     }
   ];
 
@@ -59,10 +59,10 @@ export const ActionGrid: React.FC<ActionGridProps> = ({ onAction }) => {
       <Text style={styles.sectionHeading}>Hành động nhanh</Text>
       <View style={styles.gridContainer}>
         {actions.map((item) => (
-          <TouchableOpacity 
-            key={item.id} 
-            style={[styles.gridItem, { backgroundColor: item.bg }]} 
-            onPress={() => onAction(item.id)} 
+          <TouchableOpacity
+            key={item.id}
+            style={[styles.gridItem, { backgroundColor: item.bg }]}
+            onPress={() => onAction(item.id)}
             activeOpacity={0.7}
           >
             <View style={styles.gridIconBox}>

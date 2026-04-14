@@ -7,6 +7,7 @@ import AssessmentFlow from '../components/AssessmentFlow';
 import BreathingExerciseScreen from './Home/BreathingExerciseScreen';
 import SleepScreen from './Home/SleepScreen';
 import CheckinScreen from './Home/CheckinScreen';
+import JournalScreen from './Home/JournalScreen';
 
 // Sub-components
 import { HomeHeader } from '../components/home/HomeHeader';
@@ -21,6 +22,7 @@ export default function HomeScreen() {
   const [showBreathe, setShowBreathe] = useState(false);
   const [showSleep, setShowSleep] = useState(false);
   const [showCheckin, setShowCheckin] = useState(false);
+  const [showJournal, setShowJournal] = useState(false);
 
   const handleAction = (id: string) => {
     switch (id) {
@@ -32,6 +34,9 @@ export default function HomeScreen() {
         break;
       case 'checkin':
         setShowCheckin(true);
+        break;
+      case 'reflect':
+        setShowJournal(true);
         break;
       default:
         console.log(`Action ${id} not implemented`);
@@ -73,6 +78,10 @@ export default function HomeScreen() {
 
   if (showBreathe) {
     return <BreathingExerciseScreen onClose={() => setShowBreathe(false)} />;
+  }
+
+  if (showJournal) {
+    return <JournalScreen onClose={() => setShowJournal(false)} />;
   }
 
   return (

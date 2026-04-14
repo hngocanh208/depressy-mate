@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -10,6 +10,7 @@ import {
   ActivityIndicator,
   KeyboardAvoidingView,
   Platform,
+  Image,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
@@ -22,6 +23,31 @@ import MoodSelector, { MoodType } from '../../components/checkin/MoodSelector';
 import ImagePickerSection from '../../components/checkin/ImagePickerSection';
 import api from '../../services/api';
 
+interface CheckinItem {
+  id: number;
+  user_id: number;
+  mood: MoodType;
+  note: string | null;
+  image_url: string | null;
+  created_at: string;
+}
+
+const getMoodEmoji = (mood: string) => {
+  switch (mood) {
+    case 'excellent': return '🤩';
+    case 'good': return '😊';
+    case 'okay': return '😐';
+    case 'sad': return '😢';
+    case 'terrible': return '😞';
+    default: return '😐';
+  }
+};
+
+const formatDate = (dateString: string) => {
+  const date = new Date(dateString);
+  return `${date.getDate().toString().padStart(2, '0')}/${(date.getMonth() + 1).toString().padStart(2, '0')} - ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
+};
+
 interface Props {
   onClose: () => void;
 }
@@ -32,6 +58,24 @@ export default function CheckinScreen({ onClose }: Props) {
   const [imageUri, setImageUri] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+
+  const [history, setHistory] = useState<CheckinItem[]>([]);
+  const [isLoadingHistory, setIsLoadingHistory] = useState(true);
+
+  const fetchHistory = async () => {
+    try {
+      const res = await api.get('/checkins?limit=5');
+      setHistory(res.data.checkins);
+    } catch (err) {
+      console.error('Error fetching history:', err);
+    } finally {
+      setIsLoadingHistory(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchHistory();
+  }, []);
 
   const maxNoteLength = 100;
   const wordCount = note.trim().split(/\s+/).filter(Boolean).length;
@@ -195,6 +239,40 @@ export default function CheckinScreen({ onClose }: Props) {
               </>
             )}
           </TouchableOpacity>
+
+          {/* History Section */}
+          <View style={styles.historySection}>
+            <Text style={styles.historyTitle}>Lịch sử gần đây</Text>
+            {isLoadingHistory ? (
+              <ActivityIndicator color={Colors.light.primary} style={{ marginTop: Spacing.md }} />
+            ) : history.length === 0 ? (
+              <View style={styles.emptyHistoryState}>
+                <Text style={styles.emptyHistoryText}>Chưa có ghi nhận nào.</Text>
+              </View>
+            ) : (
+              history.map((item) => (
+                <View key={item.id} style={[styles.historyCard, Shadows.ghostBorder]}>
+                  <View style={styles.historyHeaderRow}>
+                    <View style={styles.historyMoodBadge}>
+                      <Text style={styles.historyEmoji}>{getMoodEmoji(item.mood)}</Text>
+                    </View>
+                    <Text style={styles.historyDate}>{formatDate(item.created_at)}</Text>
+                  </View>
+                  {(item.note || item.image_url) && (
+                    <View style={styles.historyContent}>
+                      {item.note && <Text style={styles.historyNote}>{item.note}</Text>}
+                      {item.image_url && (
+                        <Image 
+                          source={{ uri: item.image_url }} 
+                          style={styles.historyImage} 
+                        />
+                      )}
+                    </View>
+                  )}
+                </View>
+              ))
+            )}
+          </View>
 
           <View style={{ height: Spacing.xxl }} />
         </ScrollView>
@@ -364,5 +442,78 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     color: Colors.light.onSurfaceVariant,
     textAlign: 'center',
+  },
+  // History Section
+  historySection: {
+    marginTop: Spacing.xl,
+    paddingTop: Spacing.xl,
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(203, 195, 215, 0.3)', // outline_variant with opacity
+  },
+  historyTitle: {
+    fontSize: 18,
+    fontFamily: Typography.fontFamily,
+    fontWeight: '800',
+    color: Colors.light.onSurface,
+    marginBottom: Spacing.md,
+    letterSpacing: -0.3,
+  },
+  emptyHistoryState: {
+    padding: Spacing.lg,
+    alignItems: 'center',
+    backgroundColor: Colors.light.surfaceContainerLowest,
+    borderRadius: BorderRadius.lg,
+  },
+  emptyHistoryText: {
+    fontSize: 14,
+    fontFamily: Typography.fontFamily,
+    fontWeight: '500',
+    color: Colors.light.onSurfaceVariant,
+  },
+  historyCard: {
+    backgroundColor: Colors.light.surfaceContainerLowest,
+    borderRadius: BorderRadius.lg,
+    padding: Spacing.md,
+    marginBottom: Spacing.md,
+  },
+  historyHeaderRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: Spacing.sm,
+  },
+  historyMoodBadge: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: Colors.light.surfaceContainerLow,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  historyEmoji: {
+    fontSize: 20,
+  },
+  historyDate: {
+    fontSize: 13,
+    fontFamily: Typography.fontFamily,
+    fontWeight: '600',
+    color: Colors.light.onSurfaceVariant,
+  },
+  historyContent: {
+    marginTop: Spacing.xs,
+  },
+  historyNote: {
+    fontSize: 15,
+    fontFamily: Typography.fontFamily,
+    color: Colors.light.onSurface,
+    lineHeight: 22,
+    marginBottom: Spacing.sm,
+  },
+  historyImage: {
+    width: '100%',
+    height: 220,             // Chiều cao cố định lý tưởng
+    resizeMode: 'cover',     // Cắt cúp mượt mà để lấp đầy toàn bộ khu vực, tránh dư thừa khoảng trắng
+    borderRadius: BorderRadius.md,
+    backgroundColor: Colors.light.surfaceContainerHigh,
   },
 });

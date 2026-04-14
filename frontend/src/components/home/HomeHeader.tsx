@@ -8,10 +8,17 @@ interface HomeHeaderProps {
 }
 
 export const HomeHeader: React.FC<HomeHeaderProps> = ({ userName, avatarUrl }) => {
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return 'Chào buổi sáng';
+    if (hour < 18) return 'Chào buổi chiều';
+    return 'Chào buổi tối';
+  };
+
   return (
     <View style={styles.welcomeSection}>
       <View style={styles.headerRow}>
-        <Text style={styles.greetingTitle}>Chào buổi sáng, {userName}</Text>
+        <Text style={styles.greetingTitle}>{getGreeting()}, {userName}</Text>
         <View style={styles.profileAvatarContainer}>
           {avatarUrl ? (
             <Image source={{ uri: avatarUrl }} style={styles.profileAvatar} />
