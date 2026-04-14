@@ -67,7 +67,7 @@ export default function MainTabNavigator() {
     >
       <Tab.Screen name="Home" component={HomeScreen} options={{ tabBarLabel: 'Trang chủ' }} />
       <Tab.Screen name="Contact" component={ContactScreen} options={{ tabBarLabel: 'Liên hệ' }} />
-      <Tab.Screen name="Chatbot" component={ChatbotScreen} options={{ tabBarLabel: 'Chatbot' }} />
+      <Tab.Screen name="Chatbot" component={ChatbotScreen} options={{ tabBarLabel: 'Chat' }} />
       <Tab.Screen name="Explore" component={ExploreScreen} options={{ tabBarLabel: 'Khám phá' }} />
       <Tab.Screen name="Profile" component={ProfileScreen} options={{ tabBarLabel: 'Cá nhân' }} />
     </Tab.Navigator>
