@@ -8,11 +8,12 @@ export const Colors = {
     // Brand Core
     primary: '#6B38D4', // Vibrant Purple
     primaryContainer: '#6287ccff',
+    primaryIndigo: '#6C63FF', // Updated Indigo color
     secondary: '#006A63', // Mint
     secondaryFixed: '#79F7EA',
 
     // Surfaces & Backgrounds
-    background: '#F7F9FB',
+    background: '#FFFFFF', // Pure White as requested
     surface: '#F7F9FB', // Base canvas
     surfaceContainerLowest: '#FFFFFF', // High-impact content cards (pop)
     surfaceContainerLow: '#F2F4F6', // Cards / minor lift
