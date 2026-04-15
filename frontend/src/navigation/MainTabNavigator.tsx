@@ -5,6 +5,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import HomeScreen from '../screens/HomeScreen';
 import ContactScreen from '../screens/ContactScreen';
 import ChatbotScreen from '../screens/ChatbotScreen';
+import { MessengerScreen } from '../screens/socials/MessengerScreen';
 import ExploreScreen from '../screens/ExploreScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import { Colors } from '../../constants/theme';
@@ -12,6 +13,7 @@ import { Colors } from '../../constants/theme';
 export type MainTabParamList = {
   Home: undefined;
   Contact: undefined;
+  Messenger: undefined;
   Chatbot: undefined;
   Explore: undefined;
   Profile: undefined;
@@ -52,6 +54,9 @@ export default function MainTabNavigator() {
               iconName = focused ? 'call' : 'call-outline';
               break;
             case 'Chatbot':
+              iconName = focused ? 'hardware-chip' : 'hardware-chip-outline';
+              break;
+            case 'Messenger':
               iconName = focused ? 'chatbubbles' : 'chatbubbles-outline';
               break;
             case 'Explore':
@@ -70,7 +75,7 @@ export default function MainTabNavigator() {
     >
       <Tab.Screen name="Home" component={HomeScreen} options={{ tabBarLabel: 'Trang chủ' }} />
       <Tab.Screen name="Contact" component={ContactScreen} options={{ tabBarLabel: 'Liên hệ' }} />
-      <Tab.Screen name="Chatbot" component={ChatbotScreen} options={{ tabBarLabel: 'Chat' }} />
+      <Tab.Screen name="Messenger" component={MessengerScreen} options={{ tabBarLabel: 'Tin nhắn' }} />
       <Tab.Screen name="Explore" component={ExploreScreen} options={{ tabBarLabel: 'Khám phá' }} />
       <Tab.Screen name="Profile" component={ProfileScreen} options={{ tabBarLabel: 'Cá nhân' }} />
     </Tab.Navigator>
