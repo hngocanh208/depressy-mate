@@ -26,6 +26,12 @@ export const Colors = {
 
     // Tints
     surfaceTint: '#6B38D4',
+
+    // Semantic mappings for compatibility
+    text: '#191C1E',
+    icon: '#494454',
+    surfaceContainer: '#F2F4F6',
+    surfaceContainerHighest: '#DEE1E4',
   },
   dark: {
     // Auto-inverted or alternative palette can go here in the future
@@ -43,6 +49,12 @@ export const Colors = {
     onSurfaceVariant: '#CBC3D7',
     outlineVariant: '#494454',
     surfaceTint: '#8455EF',
+
+    // Semantic mappings for compatibility
+    text: '#F7F9FB',
+    icon: '#CBC3D7',
+    surfaceContainer: '#2C2C2C',
+    surfaceContainerHighest: '#454545',
   },
 };
 
@@ -82,6 +94,7 @@ export const BorderRadius = {
   lg: 32,      // 2rem ROUND_LG
   xl: 48,      // 3rem ROUND_XL
   full: 9999,  // ROUND_FULL (buttons)
+  pill: 9999,  // PILL shape
 };
 
 export const Shadows = {
