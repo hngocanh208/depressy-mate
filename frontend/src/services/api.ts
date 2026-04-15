@@ -2,8 +2,11 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Đổi thành IP thực của máy dev khi test trên thiết bị thật
-// Ví dụ: 'http://192.168.1.x:3000/api'     
-const API_BASE_URL = 'http://172.19.200.157:3000/api'; // Android emulator localhost
+// Android Emulator: http://10.0.2.2:3000/api
+// Physical Device (Wifi): http://<YOUR_LAN_IP>:3000/api
+// Physical Device (USB): http://127.0.0.1:3000/api (run 'adb reverse tcp:3000 tcp:3000' first)
+// Fly.io Server: https://depressy-mate.fly.dev/api     
+const API_BASE_URL = 'https://depressy-mate.fly.dev/api'; // Android emulator localhost
 
 const api = axios.create({
   baseURL: API_BASE_URL,
