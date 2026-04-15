@@ -8,6 +8,7 @@ import BreathingExerciseScreen from './Home/BreathingExerciseScreen';
 import SleepScreen from './Home/SleepScreen';
 import CheckinScreen from './Home/CheckinScreen';
 import JournalScreen from './Home/JournalScreen';
+import SocialFeedScreen from './socials/SocialFeedScreen';
 
 // Sub-components
 import { HomeHeader } from '../components/home/HomeHeader';
@@ -23,6 +24,7 @@ export default function HomeScreen() {
   const [showSleep, setShowSleep] = useState(false);
   const [showCheckin, setShowCheckin] = useState(false);
   const [showJournal, setShowJournal] = useState(false);
+  const [showSocials, setShowSocials] = useState(false);
 
   const handleAction = (id: string) => {
     switch (id) {
@@ -51,6 +53,7 @@ export default function HomeScreen() {
     >
       {/* Top App Bar / Welcome Section */}
       <HomeHeader 
+        userId={user?.id || ''}
         userName={user?.fullName || 'Người dùng'} 
         avatarUrl={user?.avatarUrl} 
       />
@@ -62,7 +65,7 @@ export default function HomeScreen() {
       <ActionGrid onAction={handleAction} />
 
       {/* Community Section */}
-      <CommunitySection />
+      <CommunitySection onSeeAll={() => setShowSocials(true)} />
 
       <View style={{ height: Spacing.xl }} />
     </ScrollView>
@@ -82,6 +85,10 @@ export default function HomeScreen() {
 
   if (showJournal) {
     return <JournalScreen onClose={() => setShowJournal(false)} />;
+  }
+
+  if (showSocials) {
+    return <SocialFeedScreen onClose={() => setShowSocials(false)} />;
   }
 
   return (

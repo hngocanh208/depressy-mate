@@ -3,7 +3,11 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image } from 'rea
 import { Ionicons } from '@expo/vector-icons';
 import { Colors, Spacing, BorderRadius } from '../../../constants/theme';
 
-export const CommunitySection: React.FC = () => {
+interface CommunitySectionProps {
+  onSeeAll?: () => void;
+}
+
+export const CommunitySection: React.FC<CommunitySectionProps> = ({ onSeeAll }) => {
   const communityItems = [
     { 
       id: 1, 
@@ -34,7 +38,7 @@ export const CommunitySection: React.FC = () => {
           <Text style={styles.sectionHeading}>Cộng đồng</Text>
           <Text style={styles.communitySubtitle}>Chia sẻ và lan tỏa năng lượng</Text>
         </View>
-        <TouchableOpacity onPress={() => { }}>
+        <TouchableOpacity onPress={onSeeAll}>
           <Text style={styles.seeAllText}>Xem tất cả</Text>
         </TouchableOpacity>
       </View>
