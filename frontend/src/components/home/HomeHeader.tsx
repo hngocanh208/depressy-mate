@@ -2,12 +2,15 @@ import React from 'react';
 import { View, Text, StyleSheet, Image } from 'react-native';
 import { Colors, Spacing, BorderRadius } from '../../../constants/theme';
 
+import { UserAvatar } from '../socials/UserAvatar';
+
 interface HomeHeaderProps {
+  userId: string;
   userName: string;
   avatarUrl?: string;
 }
 
-export const HomeHeader: React.FC<HomeHeaderProps> = ({ userName, avatarUrl }) => {
+export const HomeHeader: React.FC<HomeHeaderProps> = ({ userId, userName, avatarUrl }) => {
   const getGreeting = () => {
     const hour = new Date().getHours();
     if (hour < 12) return 'Chào buổi sáng';
@@ -20,15 +23,11 @@ export const HomeHeader: React.FC<HomeHeaderProps> = ({ userName, avatarUrl }) =
       <View style={styles.headerRow}>
         <Text style={styles.greetingTitle}>{getGreeting()}, {userName}</Text>
         <View style={styles.profileAvatarContainer}>
-          {avatarUrl ? (
-            <Image source={{ uri: avatarUrl }} style={styles.profileAvatar} />
-          ) : (
-            <View style={[styles.profileAvatar, styles.placeholderAvatar]}>
-              <Text style={styles.placeholderText}>
-                {userName.charAt(0).toUpperCase()}
-              </Text>
-            </View>
-          )}
+          <UserAvatar 
+            userId={userId} 
+            size={44} 
+            prefetchData={{ avatarUrl, name: userName }} 
+          />
         </View>
       </View>
       <Text style={styles.greetingSubtitle}>Hôm nay bạn cảm thấy thế nào?</Text>
