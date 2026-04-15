@@ -85,7 +85,7 @@ export default function LoginScreen({ navigation }: Props) {
   const handleSocialLoginSuccess = async (provider: 'google' | 'facebook', token: string) => {
     setLoading(true);
     let socialUser = null;
-    
+
     if (provider === 'google') {
       socialUser = await AuthService.fetchGoogleUserInfo(token);
     } else {
@@ -137,8 +137,8 @@ export default function LoginScreen({ navigation }: Props) {
           {/* Header */}
           <View style={styles.header}>
             <View style={styles.brandContainer}>
-              <Image 
-                source={require('../../assets/images/brand_logo.png')} 
+              <Image
+                source={require('../../assets/images/brand_logo.png')}
                 style={styles.logo}
                 resizeMode="contain"
               />
